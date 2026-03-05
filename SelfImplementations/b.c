@@ -1,4 +1,4 @@
-#include <stdio.h> 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -8,8 +8,7 @@
 
 char buffer[4096];
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   int sock = socket(AF_INET, SOCK_STREAM, 0);
 
   struct sockaddr_in local;
@@ -20,25 +19,25 @@ int main(int argc, char *argv[])
   bind(sock, (void*)&local, sizeof(local));
   listen(sock, 128);
 
-  int client = accept(sock,NULL, NULL);
+  int client = accept(sock, NULL, NULL);
   write(client, "Welcome\r\n", 9);
 
   int bytesRead = 0, res;
   for (;;) {
     res = read(client, buffer, sizeof(buffer));
-    if(res < 0) {
+    if (res < 0) {
       perror("read");
       exit(1);
+    }
+
+    if (!res) {
       break;
     }
 
-    if(!res) {
-      break;
-    }
-
+    write(1, buffer, res);
     bytesRead += res;
   }
 
-  printf("%d\n", bytesRead);
+  printf("\n%d\n", bytesRead);
   return 0;
 }
